@@ -110,9 +110,9 @@ Missions/
 | `title` | `<title>` | Yes | — | Max 128 chars. |
 | `synopsis` | `<synopsis>` | No | — | Max 1024 chars. |
 | `description` | `<description>` | No | — | Max 4096 chars. |
-| `expiration` | `<expiration>` | No | none | Seconds while **offered**. |
+| `expiration` | `<expiration>` | No | 0 | Seconds while **offered**. |
 | `isRejectable` | `<isRejectable>` | No | `true` | |
-| `deadline` | `<deadline>` | No | none | Seconds after **accept**. |
+| `deadline` | `<deadline>` | No | 0 | Seconds after **accept**. |
 | `isAutoAccepted` | `<isAutoAccepted>` | No | `false` | |
 | `prerequisite` | `<prerequisite>` | No | — | §6.2 |
 | `objectives` | `<objectives>` | Yes | — | §6.3 |
