@@ -141,20 +141,23 @@ Mission XML lives in **KSAMissions** (or any mod providing missions).
 </CampaignBlueprint>
 ```
 
-**Prerequisite scope:** `<MissionComplete missionUID="…"/>` in mission XML should reference `uid`s within the same campaign’s `<missions>` list (validated as warning/error at campaign load).
+**Prerequisite scope:** Mission prerequisites may reference UIDs from the same campaign, from other campaigns (sequential or parallel), or from standalone sandbox missions. Cross-campaign references are valid and enable sequential campaigns (campaign B unlocks after campaign A) and parallel campaigns with inter-dependencies.
 
 ### 6.2 Validation
 
-| Check | Severity |
-| :---- | :------- |
-| Well-formed XML | Error |
-| Required fields | Error |
-| Duplicate campaign `uid` | Error |
-| Each `<missionUID>` exists in `IMissionRegistry` | Error |
-| `startMissionUID` listed in `<missions>` | Error |
-| Prerequisite `missionUID`s in scoped missions reference only listed missions | Warning / Error |
-| Graph reachable from `startMissionUID` | Warning |
-| Orphan `<missionUID>` (unreachable) | Warning |
+| Check | Severity | Notes |
+| :---- | :------- | :---- |
+| Well-formed XML | Error | |
+| Required fields | Error | |
+| Duplicate campaign `uid` | Error | |
+| Each `<missionUID>` exists in `IMissionRegistry` | Error | |
+| `startMissionUID` listed in `<missions>` | Error | |
+| Prerequisite `missionUID` in a scoped mission does not exist in `IMissionRegistry` | Error | Truly unknown — no campaign or mod provides it. |
+| Prerequisite `missionUID` exists in `IMissionRegistry` but is not in this campaign’s `<missions>` list | Info | Cross-campaign dependency; valid, but flagged for author awareness. |
+| `startMissionUID` has a prerequisite referencing a `missionUID` not in `IMissionRegistry` | Error | Campaign can never start — referenced mission does not exist anywhere. |
+| `startMissionUID` has a prerequisite referencing a cross-campaign `missionUID` | Warning | Campaign start depends on another campaign’s progress; valid but must be intentional. |
+| Graph reachable from `startMissionUID` (within-campaign edges only) | Warning | |
+| Orphan `<missionUID>` (unreachable within campaign) | Warning | May be reachable via cross-campaign prerequisite; still worth flagging. |
 
 ---
 
