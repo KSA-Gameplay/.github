@@ -587,14 +587,31 @@ Scope the example missions out more
       bool RejectMission(string instanceId);
       event EventHandler<MissionStateChangedEventArgs> MissionStateChanged;
       event EventHandler<ObjectiveChangedEventArgs> ObjectiveChanged;
+      
+      #if DEBUG
+            /// <summary>
+            /// Debug-only. Forces a mission blueprint to Offered state, bypassing all
+            /// prerequisite checks. For use by editor play-test features only.
+            /// Raises MissionStateChanged with the new Offered instance.
+            /// Returns false if the blueprint uid is not in IMissionRegistry.
+            /// </summary>
+            bool DebugOfferMission(string blueprintUid);
+      #endif
   }
   ```
 - `MissionController` implements `IMissionController`.
 - Expose `IMissionController.Instance` static accessor.
+- `DebugOfferMission` implementation (debug builds only):
+  - Looks up blueprint in `IMissionRegistry`; returns false if not found.
+  - Creates a new `MissionInstance` with `State = Offered`, adds it to the in-memory list.
+  - Does NOT call `EvaluateOffers()` — only the one specified mission is affected.
+  - Raises `MissionStateChanged` with the new instance.
 
 **Definition of Done:**
 - A separate test assembly can use `IMissionController` without referencing internal types.
 - Both event types carry the relevant `instanceId` and new state.
+- (Debug only) `DebugOfferMission("unknown")` returns false without throwing.
+- (Debug only) `DebugOfferMission("valid_uid")` creates an Offered instance and raises MissionStateChanged.
 
 ---
 
